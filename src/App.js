@@ -5,18 +5,21 @@ function App() {
   const [peliculas, setPeliculas] = useState([]);
   const [peliculasFiltradas, setPeliculasFiltradas] = useState([]);
   const [busqueda, setBusqueda] = useState('');
-  // Quité el modoDescripcion porque no lo usas
   const [recomendacion, setRecomendacion] = useState('');
 
+  // ✅ Aquí lees la variable de entorno:
+  const API_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
-    fetch('${API_URL}/peliculas')
+    fetch(`${API_URL}/peliculas`)
       .then(res => res.json())
       .then(data => {
+        console.log('Peliculas recibidas:', data); // <-- para depuración
         setPeliculas(data);
         setPeliculasFiltradas(data);
       })
       .catch(err => console.error('Error al obtener películas:', err));
-  }, []);
+  }, [API_URL]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
@@ -34,7 +37,7 @@ function App() {
 
   const handleBuscarPorDescripcion = async () => {
     try {
-      const res = await fetch('${API_URL}/recomendaciones', {
+      const res = await fetch(`${API_URL}/recomendaciones`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
